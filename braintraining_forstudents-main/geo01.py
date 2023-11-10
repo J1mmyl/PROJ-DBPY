@@ -1,7 +1,9 @@
-# Training (GEO01)
-# JCY oct 23
-# PRO DB PY
-# TESTESTEST
+"""
+Autor: Jimmy LAM
+Date: 10.11.2023 (dd.mm.yyyy)
+Version: 1.0
+Mettre
+"""
 
 import tkinter as tk
 import random
