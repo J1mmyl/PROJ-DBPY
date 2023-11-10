@@ -2,7 +2,7 @@
 Autor: Jimmy LAM
 Date: 10.11.2023 (dd.mm.yyyy)
 Version: 1.0
-Mettre
+Mettre les données du jeu sur une base de données.
 """
 
 import tkinter as tk

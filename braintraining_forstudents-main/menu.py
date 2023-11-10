@@ -1,8 +1,9 @@
-#############################
-# Training (Menu)
-# JCY oct 23
-# PRO DB PY
-#############################
+"""
+Autor: Jimmy LAM
+Date: 10.11.2023 (dd.mm.yyyy)
+Version: 1.0
+Description: Menu principal
+"""
 
 import tkinter as tk
 import subprocess
