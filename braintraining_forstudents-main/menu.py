@@ -1,66 +1,78 @@
 """
-Autor: Jimmy LAM
-Date: 10.11.2023 (dd.mm.yyyy)
-Version: 1.0
-Description: Menu principal
+Author      : Jimmy LAM
+Date        : 24.11.2023
+Version     : v1
 """
 
 import tkinter as tk
 import subprocess
+import resultstable
 
-# exercises array
-a_exercise=["geo01", "info02", "info05"]
-albl_image=[None, None, None] # label (with images) array
-a_image=[None, None, None] # images array
-a_title=[None, None, None] # array of title (ex: GEO01)
-
-
-# call other windows (exercices)
-def exercise(event,exer):
-    print(exer)
-    subprocess.Popen(["python", exer+".py"])
-
-
-#call display_results
-def display_result(event):
-    # TODO
-    print("display_result")
+# identifiants mysql
+config = {
+  'user': 'root',
+  'host': '127.0.0.1',
+  'database': 'mygame',
+  'raise_on_warnings': True,
+  'autocommit': True,
+  'buffered': True
+}
 
 
-# Main window
+# Constantes de couleur
+COULEUR_BG = (139, 201, 194)
+COULEUR_HEX = '#%02x%02x%02x' % COULEUR_BG
+
+# Tableau des exercices
+exercices = ["geo01", "info02", "info05"]
+etiquettes_images = [None, None, None]  # Tableau de labels (avec images)
+images = [None, None, None]  # Tableau d'images
+titres = [None, None, None]  # Tableau de titres (ex: GEO01)
+
+def creer_etiquette_et_image(exercice, ligne, colonne):
+    """Crée un label et une image pour chaque exercice."""
+    etiquette = tk.Label(window, text=exercice, font=("Arial", 15))
+    etiquette.grid(row=ligne, column=colonne, padx=40, pady=10)
+
+    chemin_image = f"img/{exercice}.gif"
+    image = tk.PhotoImage(file=chemin_image)
+    etiquette_image = tk.Label(window, image=image)
+    etiquette_image.grid(row=ligne + 1, column=colonne, padx=40, pady=10)
+    etiquette_image.bind("<Button-1>", lambda event, ex=exercice: exercice_selectionne(event=None, exercice=ex))
+
+    return etiquette, etiquette_image, image
+
+def afficher_resultats():
+    subprocess.run(["python", "resultstable.py"])
+
+def quitter(event):
+    window.destroy()
+
+# Fenêtre principale
 window = tk.Tk()
-window.title("Training, entrainement cérébral")
+window.title("Entraînement cérébral")
 window.geometry("1100x900")
+window.configure(bg=COULEUR_HEX)
+window.grid_columnconfigure((0, 1, 2), minsize=300, weight=1)
 
-# color définition
-rgb_color = (139, 201, 194)
-hex_color = '#%02x%02x%02x' % rgb_color # translation in hexa
-window.configure(bg=hex_color)
-window.grid_columnconfigure((0,1,2), minsize=300, weight=1)
+# Création du titre
+lbl_titre = tk.Label(window, text="MENU D'ENTRAÎNEMENT", font=("Arial", 15))
+lbl_titre.grid(row=0, column=1, ipady=5, padx=40, pady=40)
 
-# Title création
-lbl_title = tk.Label(window, text="TRAINING MENU", font=("Arial", 15))
-lbl_title.grid(row=0, column=1,ipady=5, padx=40,pady=40)
+# Création des labels et positionnement à l'aide d'une boucle
+for ex_index, ex in enumerate(exercices):
+    ligne_position = 1 + 2 * (ex_index // 3)
+    colonne_position = ex_index % 3
 
-# labels creation and positioning
-for ex in range(len(a_exercise)) :
-    a_title[ex]=tk.Label(window, text=a_exercise[ex], font=("Arial", 15))
-    a_title[ex].grid(row=1+2*(ex//3),column=ex % 3 , padx=40,pady=10) # 3 label per row
+    titres[ex_index], etiquettes_images[ex_index], images[ex_index] = creer_etiquette_et_image(ex, ligne_position, colonne_position)
 
-    a_image[ex] = tk.PhotoImage(file="img/" + a_exercise[ex] + ".gif") # image name
-    albl_image[ex] = tk.Label(window, image=a_image[ex]) # put image on label
-    albl_image[ex].grid(row=2 + 2*(ex // 3), column=ex % 3, padx=40, pady=10) # 3 label per row
-    albl_image[ex].bind("<Button-1>", lambda event, ex = ex :exercise(event=None, exer=a_exercise[ex])) #link to others .py
-    print(a_exercise[ex])
+# Boutons, affichage des résultats et quitter
+btn_afficher = tk.Button(window, text="Afficher les résultats", font=("Arial", 15), command=afficher_resultats)
+btn_afficher.grid(row=1 + 2 * len(exercices) // 3, column=1)
 
-# Buttons, display results & quit
-btn_display = tk.Button(window, text="Display results", font=("Arial", 15))
-btn_display.grid(row=1+ 2*len(a_exercise)//3 , column=1)
-btn_display.bind("<Button-1>",lambda e: display_result(e))
+btn_quitter = tk.Button(window, text="Quitter", font=("Arial", 15))
+btn_quitter.grid(row=2 + 2 * len(exercices) // 3, column=1)
+btn_quitter.bind("<Button-1>", quitter)
 
-btn_finish = tk.Button(window, text="Quitter", font=("Arial", 15))
-btn_finish.grid(row=2+ 2*len(a_exercise)//3 , column=1)
-btn_finish.bind("<Button-1>", quit)
-
-# main loop
+# Boucle principale
 window.mainloop()

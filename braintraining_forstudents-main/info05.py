@@ -1,18 +1,17 @@
 """
-Autor: Jimmy LAM
-Date: 10.11.2023 (dd.mm.yyyy)
-Version: 1.0
-Description: La couleur perdue
+Autor       : Jimmy LAM
+Date        : 24.11.2023
+Version     : v1
 """
 import math
 import tkinter as tk
-from tkinter.messagebox import showinfo          # Les alertes
+from tkinter.messagebox import showinfo
 import random
 from math import cos, sin, pi
 from colorsys import hsv_to_rgb, rgb_to_hsv
 from math import sqrt
 import time
-import database
+from database import save_game
 import datetime
 from tkinter.messagebox import *
 
@@ -28,6 +27,7 @@ pseudo="Gaston" #provisory pseudo for user
 exercise="INFO05"
 nbtrials=0 #number of total trials
 nbsuccess=0 #number of successfull trials
+base_results = []
 
 #exercise data
 rgb=[100,150,200]  #random color as list
@@ -193,9 +193,9 @@ def sl_v(event):
     display()
 
 
-def save_game(event):
-    print("dans save")
-    #TODO
+def insert_results():
+    results = [entry_pseudo.get(), datetime.datetime.now(), lbl_duration['text'], exercise, nbsuccess, nbtrials]
+    save_game(results)
 
 
 def display_timer():
@@ -257,7 +257,11 @@ slider_v.grid(row=7,column=0,columnspan=3, padx=10,pady=0)
 btn_next =tk.Button(window, text="Suivant", font=("Arial", 15))
 btn_next.grid( row=8, column=1, ipady=5, padx=20,pady=10)
 
-btn_finish = tk.Button(window, text="Terminer", font=("Arial", 15))
+def on_finish_button_click():
+    insert_results()
+    window.destroy()
+
+btn_finish = tk.Button(window, text="Terminer", font=("Arial", 15),command=on_finish_button_click)
 btn_finish.grid(row=8, column=2)
 
 
@@ -271,7 +275,6 @@ display_timer()
 btn_next.bind("<Button-1>", next_color)
 entry_response.bind("<Return>", test)
 slider_v.bind("<ButtonRelease-1>", sl_v)
-btn_finish.bind("<Button-1>", save_game)
 
 # main loop
 window.mainloop()
