@@ -155,7 +155,7 @@ next_point(event=None)
 start_date = datetime.datetime.now()
 display_timer()
 
-# Binding actions
+# Binding actions 
 canvas.bind("<Button-1>", canvas_click)
 btn_next.bind("<Button-1>", next_point)
 
