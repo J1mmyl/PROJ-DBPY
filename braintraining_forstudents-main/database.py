@@ -63,8 +63,8 @@ def get_database_infos(pseudo):
         infos.append(nbtrials)
 
     else:
-        sql = "SELECT id FROM results WHERE pseudo LIKE %s"
-        cursor.execute(sql, (pseudo,))
+        sql = "SELECT id FROM results"
+        cursor.execute(sql)
         ids = cursor.fetchall()
         infos.append(ids)
 
@@ -98,6 +98,7 @@ def get_database_infos(pseudo):
         nbtrials = cursor.fetchall()
         infos.append(nbtrials)
 
+        print("INFO :" + str(infos))
     cursor.close()
     return infos
 

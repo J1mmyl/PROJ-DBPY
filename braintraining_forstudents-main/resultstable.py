@@ -2,7 +2,6 @@
 Author      : Jimmy LAM
 Date        : 24.11.2023
 Version     : v1
-a        : Affichage des résultats de l'élève
 """
 
 from tkinter import *
@@ -269,38 +268,32 @@ def update_from_id():
         student_name_label.pack()
         student_name_entry = Entry(fenetre, width=30)
         student_name_entry.pack()
-        student_name = student_name_entry.get()
 
         date_hour_label = Label(fenetre, text="Date et heure (yyyy-mm-dd 00:00:00) :")
         date_hour_label.pack()
         date_hour_entry = Entry(fenetre, width=30)
         date_hour_entry.pack()
-        date_hour = date_hour_entry.get()
 
 
         time_label = Label(fenetre, text="Temps (00:00:00) :")
         time_label.pack()
         time_entry = Entry(fenetre, width=30)
         time_entry.pack()
-        time = time_entry.get()
 
         exo_label = Label(fenetre, text="Exercice :")
         exo_label.pack()
         exo_entry = Entry(fenetre, width=30)
         exo_entry.pack()
-        exo = exo_entry.get()
 
         nb_ok_label = Label(fenetre, text="nb OK :")
         nb_ok_label.pack()
         nb_ok_entry = Entry(fenetre, width=30)
         nb_ok_entry.pack()
-        nb_ok = nb_ok_entry.get()
 
         nb_total_label = Label(fenetre, text="nb OK :")
         nb_total_label.pack()
         nb_total_entry = Entry(fenetre, width=30)
         nb_total_entry.pack()
-        nb_total = nb_total_entry.get()
 
 
         def update_sql():
@@ -309,16 +302,16 @@ def update_from_id():
             cursor = mydb.cursor()
             sql = """
                     UPDATE results
-                    SET results.pseudo = '%s',
+                    SET results.pseudo = %s,
                     results.date_hour = %s,
-                    results.during = '%s',
-                    results.exercise = '%s',
-                    results.nb_ok = '%s',
-                    results.nb_trials = '%s'
+                    results.during = %s,
+                    results.exercise = %s,
+                    results.nb_ok = %s,
+                    results.nb_trials = %s,
                     WHERE results.id = %s;
                     """
         
-            cursor.execute(sql, (student_name, date_hour, time, exo, nb_ok, nb_total, id_entry.get()))
+            cursor.execute(sql, (student_name_entry.get(), date_hour_entry.get(), time_entry.get(), exo_entry.get(), nb_ok_entry.get(), nb_total_entry.get(), id_entry.get()[0]))
             cursor.close()
             show_results()
  
@@ -333,7 +326,7 @@ def create_new_player():
     # Création d'une fenêtre avec la classe Tk :
     fenetre = Tk()
     # Affichage de la fenêtre créée :
-    fenetre.title("Modifier un résultat")
+    fenetre.title("Créer un résultat")
     fenetre.geometry("300x200")
     fenetre.minsize(300, 300)
     fenetre.maxsize(300, 300)
@@ -343,54 +336,41 @@ def create_new_player():
     student_name_label.pack()
     student_name_entry = Entry(fenetre, width=30)
     student_name_entry.pack()
-    student_name = student_name_entry.get()
-    print("student name :" + student_name)
 
     date_hour_label = Label(fenetre, text="Date et heure (yyyy-mm-dd 00:00:00) :")
     date_hour_label.pack()
     date_hour_entry = Entry(fenetre, width=30)
     date_hour_entry.pack()
-    date_hour = date_hour_entry.get()
-    print(date_hour)
 
     time_label = Label(fenetre, text="Temps (00:00:00) :")
     time_label.pack()
     time_entry = Entry(fenetre, width=30)
     time_entry.pack()
-    time = time_entry.get()
-    print(time)
 
     exo_label = Label(fenetre, text="Exercice :")
     exo_label.pack()
     exo_entry = Entry(fenetre, width=30)
     exo_entry.pack()
-    exo = exo_entry.get()
-    print(exo)
 
     nb_ok_label = Label(fenetre, text="nb OK :")
     nb_ok_label.pack()
     nb_ok_entry = Entry(fenetre, width=30)
     nb_ok_entry.pack()
-    nb_ok = nb_ok_entry.get()
-    print(nb_ok)
-
+    
     nb_total_label = Label(fenetre, text="nb OK :")
     nb_total_label.pack()
     nb_total_entry = Entry(fenetre, width=30)
     nb_total_entry.pack()
-    nb_total = nb_total_entry.get()
-    print(nb_total)
 
     def update_sql():
         # SQL
-        print(date_hour_entry.get())
         cursor = mydb.cursor()
         sql ="""
                 INSERT INTO results(pseudo, date_hour, during, exercise, nb_ok, nb_trials)
-                VALUES ('%s', %s, '%s', '%s', %s, %s);
+                VALUES (%s, %s, %s, %s, %s, %s);
             """
     
-        cursor.execute(sql, (student_name, date_hour, time, exo, nb_ok, nb_total))
+        cursor.execute(sql, (student_name_entry.get(), date_hour_entry.get(), time_entry.get(), exo_entry.get(), nb_ok_entry.get(), nb_total_entry.get()))
         cursor.close()
         show_results()
 
