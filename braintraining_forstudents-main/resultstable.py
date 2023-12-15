@@ -110,7 +110,7 @@ def show_results():
             color = "green"
 
         text_label = Label(results, width=width_pourcent, bg=color, height=1, font=("Arial", 11))
-        text_label.grid(row=line+1, column=6, sticky=W)
+        text_label.grid(row=line+1, column=7, sticky=W)
 
     total_lines = len(results_infos[0])
 
@@ -156,6 +156,7 @@ l_end_date = Label(filters, text="Date fin :", bg="white", padx=40, font=("Arial
 e_end_date = Entry(filters)
 
 b_show_result = Button(filters, text="Voir résultats", font=("Arial,11"), command=show_results)
+b_filter_by_date = Button(filters, text="Filtrer par date de début", font=("Arial,11"))
 
 # results part
 results = Frame(bg="white", padx=10)
@@ -205,6 +206,7 @@ l_end_date.grid(row=0, column=6, padx=(0, 10))
 e_end_date.grid(row=0, column=7)
 
 b_show_result.grid(row=1, column=0, pady=5)
+b_filter_by_date.grid(row=1, column=1, pady=5)
 
 # results part
 results.pack()
@@ -326,7 +328,7 @@ def update_from_id():
                     WHERE results.id = %s;
                     """
         
-            cursor.execute(sql, (student_name_entry.get(), date_hour_entry.get(), time_entry.get(), exo_entry.get(), nb_ok_entry.get(), nb_total_entry.get(), id_entry.get()[0]))
+            cursor.execute(sql, (student_name_entry.get(), date_hour_entry.get(), time_entry.get(), exo_entry.get(), nb_ok_entry.get(), nb_total_entry.get(), id_entry.get()))
             cursor.close()
             show_results()
  
