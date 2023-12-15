@@ -277,4 +277,4 @@ entry_response.bind("<Return>", test)
 slider_v.bind("<ButtonRelease-1>", sl_v)
 
 # main loop
-window.mainloop()
+window.mainloop() 
