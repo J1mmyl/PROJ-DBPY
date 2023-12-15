@@ -76,3 +76,4 @@ btn_quitter.bind("<Button-1>", quitter)
 
 # Boucle principale
 window.mainloop()
+ 
