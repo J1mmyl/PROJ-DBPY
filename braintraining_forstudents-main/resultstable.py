@@ -247,6 +247,15 @@ def delete_from_id():
     print("Data supprimé")
     show_results()
 
+def delete_all_from_id():
+    cursor = mydb.cursor()
+    sql = "DELETE FROM results"
+    cursor.execute(sql)
+    cursor.close()
+
+    print("Data supprimé")
+    show_results()
+
 def update_from_id():
     global fenetre_ouverte
     
@@ -269,37 +278,43 @@ def update_from_id():
         student_name_entry = Entry(fenetre, width=30)
         student_name_entry.pack()
 
+        # Création du label et de l'entrée pour la date et heure.
         date_hour_label = Label(fenetre, text="Date et heure (yyyy-mm-dd 00:00:00) :")
         date_hour_label.pack()
         date_hour_entry = Entry(fenetre, width=30)
         date_hour_entry.pack()
 
-
+        # Création du label et de l'entrée pour le temps.
         time_label = Label(fenetre, text="Temps (00:00:00) :")
         time_label.pack()
         time_entry = Entry(fenetre, width=30)
         time_entry.pack()
 
+        # Création du label et de l'entrée pour l'exercice.
         exo_label = Label(fenetre, text="Exercice :")
         exo_label.pack()
         exo_entry = Entry(fenetre, width=30)
         exo_entry.pack()
 
+        # Création du label et de l'entrée pour le nombre de réussite.
         nb_ok_label = Label(fenetre, text="nb OK :")
         nb_ok_label.pack()
         nb_ok_entry = Entry(fenetre, width=30)
         nb_ok_entry.pack()
 
+        # Création du label et de l'entrée pour le nombre d'essais.
         nb_total_label = Label(fenetre, text="nb OK :")
         nb_total_label.pack()
         nb_total_entry = Entry(fenetre, width=30)
         nb_total_entry.pack()
 
 
+        # Fonction pour insérer les données dans la base de données
         def update_sql():
             # SQL
             print(date_hour_entry.get())
             cursor = mydb.cursor()
+            # Commande sql pour modifier les données
             sql = """
                     UPDATE results
                     SET results.pseudo = %s,
@@ -337,44 +352,54 @@ def create_new_player():
     student_name_entry = Entry(fenetre, width=30)
     student_name_entry.pack()
 
+    # Création du label et de l'entrée pour la date et heure.
     date_hour_label = Label(fenetre, text="Date et heure (yyyy-mm-dd 00:00:00) :")
     date_hour_label.pack()
     date_hour_entry = Entry(fenetre, width=30)
     date_hour_entry.pack()
 
+    # Création du label et de l'entrée pour le temps.
     time_label = Label(fenetre, text="Temps (00:00:00) :")
     time_label.pack()
     time_entry = Entry(fenetre, width=30)
     time_entry.pack()
 
+    # Création du label et de l'entrée pour l'exercice.
     exo_label = Label(fenetre, text="Exercice :")
     exo_label.pack()
     exo_entry = Entry(fenetre, width=30)
     exo_entry.pack()
 
+    # Création du label et de l'entrée pour le nombre de réussite.
     nb_ok_label = Label(fenetre, text="nb OK :")
     nb_ok_label.pack()
     nb_ok_entry = Entry(fenetre, width=30)
     nb_ok_entry.pack()
     
+    # Création du label et de l'entrée pour le nombre d'essais.
     nb_total_label = Label(fenetre, text="nb OK :")
     nb_total_label.pack()
     nb_total_entry = Entry(fenetre, width=30)
     nb_total_entry.pack()
 
+    # Fonction pour insérer les données dans la base de données
     def update_sql():
-        # SQL
-        cursor = mydb.cursor()
-        sql ="""
-                INSERT INTO results(pseudo, date_hour, during, exercise, nb_ok, nb_trials)
-                VALUES (%s, %s, %s, %s, %s, %s);
-            """
-    
+        try:
+            # SQL
+            cursor = mydb.cursor()
+            # Commande sql pour insérer les données
+            sql ="""
+                    INSERT INTO results(pseudo, date_hour, during, exercise, nb_ok, nb_trials)
+                    VALUES (%s, %s, %s, %s, %s, %s);
+                """
+        except: # Si erreur
+            print("Erreur lors de l'insertion des données")
+
         cursor.execute(sql, (student_name_entry.get(), date_hour_entry.get(), time_entry.get(), exo_entry.get(), nb_ok_entry.get(), nb_total_entry.get()))
         cursor.close()
         show_results()
 
-
+    # Création du bouton de validation
     validation_button = Button(fenetre, text="Valider", command=update_sql)
     validation_button.pack(side=BOTTOM, padx=5, pady=5)
     fenetre.mainloop()
@@ -384,15 +409,24 @@ def create_new_player():
 
 
 # Create, delete, update data
+    
+# entry pour l'id    
 id_entry = Entry(window, width=5)
 id_entry.pack(side="left", padx=10, pady=10)
 
-delete_btn = Button(window, text="Delete", font=("Arial", 11), command=delete_from_id)
-delete_btn.pack(side="left", padx=10, pady=10)
-
+# boutons update pour modifier les données
 update_btn = Button(window, text="Update", font=("Arial", 11), command=update_from_id)
 update_btn.pack(side="left", padx=10, pady=10)
 
+# boutons delete pour supprimer les données d'un id
+delete_btn = Button(window, text="Delete", font=("Arial", 11), command=delete_from_id)
+delete_btn.pack(side="left", padx=10, pady=10)
+
+# boutons delete pour supprimer toutes les données
+delete_all_btn = Button(window, text="Delte All", font=("Arial", 11), command=delete_all_from_id)
+delete_all_btn.pack(side="left", padx=10, pady=10)
+
+# boutons create pour créer un nouveau joueur
 create_btn = Button(window, text="Create", font=("Arial", 11), command=create_new_player)
 create_btn.pack(side="left", padx=10, pady=10)
 

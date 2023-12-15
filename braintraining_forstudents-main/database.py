@@ -1,3 +1,8 @@
+"""
+Author      : Jimmy LAM
+Date        : 24.11.2023
+Version     : v1
+"""
 import mysql.connector
 import datetime
 import pathlib
@@ -15,6 +20,8 @@ config = {
   'buffered': True
 }
 
+# start connection
+mydb = mysql.connector.connect(**config)
 
 def save_game(results):
     sql="INSERT INTO results (pseudo,date_hour,during,exercise,nb_ok,nb_trials) VALUES(%s, %s, %s, %s, %s, %s)"
@@ -25,7 +32,6 @@ def save_game(results):
 def get_database_infos(pseudo):
     infos = []
     cursor = mydb.cursor()
-
     if pseudo:
         sql = "SELECT id FROM results WHERE pseudo LIKE %s"
         cursor.execute(sql, (pseudo,))
@@ -101,8 +107,3 @@ def get_database_infos(pseudo):
         print("INFO :" + str(infos))
     cursor.close()
     return infos
-
-
-# start connection
-mydb = mysql.connector.connect(**config)
-
