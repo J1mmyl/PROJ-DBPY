@@ -79,7 +79,7 @@ def show_results():
     pseudo_label.grid(row=0, column=0, columnspan=7, pady=10)
 
     for line in range(len(results_infos[0])):
-        for col in range(6):
+        for col in range(7):
             # Création label
             blank_results[line] = tkinter.Label(results, text=str(results_infos[col][line][0]), pady=3, width=14, bg="white", height=1, font=("Arial", 11))
 
@@ -117,6 +117,7 @@ def show_results():
     color = "orange"
     if total_lines !=0:
         if round(total_ok/total_lines) <= 5:
+            print("test du nombre total de ligne :" + total_lines)
             color = "red"
         if round(total_ok/total_lines) >= 15:
             color = "green"
@@ -156,7 +157,7 @@ l_end_date = Label(filters, text="Date fin :", bg="white", padx=40, font=("Arial
 e_end_date = Entry(filters)
 
 b_show_result = Button(filters, text="Voir résultats", font=("Arial,11"), command=show_results)
-b_filter_by_date = Button(filters, text="Filtrer par date de début", font=("Arial,11"))
+
 
 # results part
 results = Frame(bg="white", padx=10)
@@ -206,7 +207,6 @@ l_end_date.grid(row=0, column=6, padx=(0, 10))
 e_end_date.grid(row=0, column=7)
 
 b_show_result.grid(row=1, column=0, pady=5)
-b_filter_by_date.grid(row=1, column=1, pady=5)
 
 # results part
 results.pack()
@@ -320,14 +320,15 @@ def update_from_id():
             sql = """
                     UPDATE results
                     SET results.pseudo = %s,
-                    results.date_hour = %s,
-                    results.during = %s,
-                    results.exercise = %s,
-                    results.nb_ok = %s,
-                    results.nb_trials = %s,
+                        results.date_hour = %s,
+                        results.during = %s,
+                        results.exercise = %s,
+                        results.nb_ok = %s,
+                        results.nb_trials = %s
                     WHERE results.id = %s;
-                    """
-        
+                """
+
+                    
             cursor.execute(sql, (student_name_entry.get(), date_hour_entry.get(), time_entry.get(), exo_entry.get(), nb_ok_entry.get(), nb_total_entry.get(), id_entry.get()))
             cursor.close()
             show_results()
@@ -379,13 +380,13 @@ def create_new_player():
     nb_ok_entry.pack()
     
     # Création du label et de l'entrée pour le nombre d'essais.
-    nb_total_label = Label(fenetre, text="nb OK :")
+    nb_total_label = Label(fenetre, text="nb Trials :")
     nb_total_label.pack()
     nb_total_entry = Entry(fenetre, width=30)
     nb_total_entry.pack()
 
     # Fonction pour insérer les données dans la base de données
-    def update_sql():
+    def create_sql():
         try:
             # SQL
             cursor = mydb.cursor()
@@ -402,16 +403,13 @@ def create_new_player():
         show_results()
 
     # Création du bouton de validation
-    validation_button = Button(fenetre, text="Valider", command=update_sql)
+    validation_button = Button(fenetre, text="Valider", command=create_sql)
     validation_button.pack(side=BOTTOM, padx=5, pady=5)
     fenetre.mainloop()
 
         
         
-
-
 # Create, delete, update data
-    
 # entry pour l'id    
 id_entry = Entry(window, width=5)
 id_entry.pack(side="left", padx=10, pady=10)
