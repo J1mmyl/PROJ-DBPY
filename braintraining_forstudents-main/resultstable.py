@@ -9,8 +9,7 @@ from database import get_database_infos
 import tkinter.font
 import datetime
 import mysql.connector
-import pathlib
-import csv
+import hashlib
 
 # identifiants mysql
 config = {
@@ -157,6 +156,8 @@ l_end_date = Label(filters, text="Date fin :", bg="white", padx=40, font=("Arial
 e_end_date = Entry(filters)
 
 b_show_result = Button(filters, text="Voir résultats", font=("Arial,11"), command=show_results)
+
+
 
 
 # results part
@@ -407,8 +408,11 @@ def create_new_player():
     validation_button.pack(side=BOTTOM, padx=5, pady=5)
     fenetre.mainloop()
 
+<<<<<<< HEAD
+=======
         
         
+>>>>>>> 6a96131aa781e697262d1d418d0361cd5eae2ff7
 # Create, delete, update data
 # entry pour l'id    
 id_entry = Entry(window, width=5)
@@ -430,8 +434,28 @@ delete_all_btn.pack(side="left", padx=10, pady=10)
 create_btn = Button(window, text="Create", font=("Arial", 11), command=create_new_player)
 create_btn.pack(side="left", padx=10, pady=10)
 
+# -------------------------- login & Register ----------------------------
+def login():
+    # fonction pour hasher le mot de passe
+    def hash_password(password):
+        password_bytes = password.encode('utf-8')
+        hash_object = hashlib.sha256(password_bytes)
+        return hash_object.hexdigest()
+    
+    # Création d'une fenêtre avec la classe Tk :
+    fenetre_login = Tk()
+    # Affichage de la fenêtre créée :
+    fenetre_login.title("Login")
+    fenetre_login.geometry("300x200")
+    fenetre_login.minsize(300, 300)
+    fenetre_login.maxsize(300, 300)
+
+
+# boutons pour register ou login
+login_register = Button(filters, text="Login/Register", font=("Arial", 11), command=login)
+login_register.grid(row=1, column=2, pady=5)
+
 # start connection
 mydb = mysql.connector.connect(**config)
-
 # window's end
 window.mainloop()
