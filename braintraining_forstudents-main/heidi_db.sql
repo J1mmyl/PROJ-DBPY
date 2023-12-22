@@ -22,7 +22,7 @@ USE `mygame` ;
 -- -----------------------------------------------------
 -- Table `mygame`.`game`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mygame`.`game` (
+CREATE TABLE IF NOT EXISTS `mygame`.`results` (
   `idgame` INT NOT NULL,
   `exercise` VARCHAR(45) NOT NULL,
   `date_hour` DATE NOT NULL,
