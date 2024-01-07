@@ -5,6 +5,7 @@ Version     : v1
 """
 
 from tkinter import *
+from tkinter import messagebox
 from database import get_database_infos
 import tkinter.font
 import datetime
@@ -28,6 +29,7 @@ num_ok = 0
 num_total = 0
 pourcent_total = 0
 last_row_count = 0
+level = 0
 
 # window's start
 window = Tk()
@@ -408,51 +410,178 @@ def create_new_player():
     validation_button.pack(side=BOTTOM, padx=5, pady=5)
     fenetre.mainloop()
 
-<<<<<<< HEAD
-=======
-        
-        
->>>>>>> 6a96131aa781e697262d1d418d0361cd5eae2ff7
-# Create, delete, update data
-# entry pour l'id    
-id_entry = Entry(window, width=5)
-id_entry.pack(side="left", padx=10, pady=10)
-
-# boutons update pour modifier les données
-update_btn = Button(window, text="Update", font=("Arial", 11), command=update_from_id)
-update_btn.pack(side="left", padx=10, pady=10)
-
-# boutons delete pour supprimer les données d'un id
-delete_btn = Button(window, text="Delete", font=("Arial", 11), command=delete_from_id)
-delete_btn.pack(side="left", padx=10, pady=10)
-
-# boutons delete pour supprimer toutes les données
-delete_all_btn = Button(window, text="Delte All", font=("Arial", 11), command=delete_all_from_id)
-delete_all_btn.pack(side="left", padx=10, pady=10)
-
-# boutons create pour créer un nouveau joueur
-create_btn = Button(window, text="Create", font=("Arial", 11), command=create_new_player)
-create_btn.pack(side="left", padx=10, pady=10)
-
 # -------------------------- login & Register ----------------------------
-def login():
+def def_login_register():
+    global id_entry
+
     # fonction pour hasher le mot de passe
     def hash_password(password):
         password_bytes = password.encode('utf-8')
         hash_object = hashlib.sha256(password_bytes)
         return hash_object.hexdigest()
-    
+        # Fonction pour insérer les données dans la base de données
+
+    def register_sql():
+        global username_confirmg, id_entry
+        cursor = mydb.cursor()
+        try:
+            # Check if the username already exists
+            sql_select = "SELECT users.username FROM users WHERE username = %s"
+            cursor.execute(sql_select, (username_entry.get(), ))
+            existing_username = cursor.fetchone()
+
+            if existing_username:
+
+                def user_level():
+
+                    level = "SELECT users.level FROM users WHERE username = %s"
+                    cursor.execute(level, (username_entry.get(), ))
+                    user_level = cursor.fetchone()
+                    return user_level
+
+                def destroy_fensters():
+
+                    fenetre_login.destroy()
+                    fenetre_register.destroy()
+
+
+                def user_login():
+                    global id_entry
+                    
+                    if user_level()[0] > 1:
+                        level = 2
+                    else:
+                        level = 1
+
+                    username = "SELECT users.username FROM users WHERE username = %s"
+                    cursor.execute(username, (username_entry.get(), ))
+
+                    username_display = cursor.fetchone()
+                    username_label = Label(filters, text=username_display, font=("Arial", 11))
+                    username_label.grid(row=1, column=3, pady=5)
+                    fenetre_login.destroy()
+                    fenetre_register.destroy()
+
+                    if level == 2:
+                        # -------------------------------- Create, delete, update data ----------------------------------
+                        # entry pour l'id    
+                        id_entry = Entry(window, width=5)
+                        id_entry.pack(side="left", padx=10, pady=10)
+
+                        # boutons update pour modifier les données
+                        update_btn = Button(window, text="Update", font=("Arial", 11), command=update_from_id)
+                        update_btn.pack(side="left", padx=10, pady=10)
+
+                        # boutons delete pour supprimer les données d'un id
+                        delete_btn = Button(window, text="Delete", font=("Arial", 11), command=delete_from_id)
+                        delete_btn.pack(side="left", padx=10, pady=10)
+
+                        # boutons delete pour supprimer toutes les données
+                        delete_all_btn = Button(window, text="Delte All", font=("Arial", 11), command=delete_all_from_id)
+                        delete_all_btn.pack(side="left", padx=10, pady=10)
+
+                        # boutons create pour créer un nouveau joueur
+                        create_btn = Button(window, text="Create", font=("Arial", 11), command=create_new_player)
+                        create_btn.pack(side="left", padx=10, pady=10)
+
+                    if level == 1:
+                        print("level has been reset to 1")
+                        # -------------------------------- Create, delete, update data ----------------------------------
+                        # entry pour l'id    
+                        id_entry.grid_forget()
+                        # boutons update pour modifier les données
+                        update_btn.grid_forget()
+
+                        # boutons delete pour supprimer les données d'un id
+                        delete_btn.grid_forget()
+
+                        # boutons delete pour supprimer toutes les données
+                        delete_all_btn.grid_forget()
+
+                        # boutons create pour créer un nouveau joueur
+                        create_btn.grid_forget()
+
+                # Création d'une fenêtre avec la classe Tk :
+                fenetre_login = Tk()
+                # Affichage de la fenêtre créée avec quelques paramètres :
+                fenetre_login.title("Login")
+                fenetre_login.geometry("100x50")
+                fenetre_login.minsize(150, 50)
+                fenetre_login.maxsize(150, 50)
+
+                # Création du label pour la question.
+                login_question = Label(fenetre_login, text="Se log in ?")
+                login_question.pack()
+
+                # Création du bouton de validation
+                oui_button = Button(fenetre_login, text="Oui", command=lambda:user_login())
+                oui_button.pack(side=LEFT, padx=5, pady=5)
+
+                # Création du bouton de refus
+                non_button = Button(fenetre_login, text="Non", command=lambda:destroy_fensters())
+                non_button.pack(side=RIGHT, padx=5, pady=5)
+
+                fenetre_login.mainloop()
+                print("This user already exist. Log you !")
+
+
+            else:
+                # Insert a new user into the database
+                sql_insert = """
+                    INSERT INTO users(username, `password`, `level`)
+                    VALUES (%s, %s, 1);
+                """
+                cursor.execute(sql_insert, (username_entry.get(), hash_password(password_entry.get())))
+
+                # Commit the changes
+                mydb.commit()
+
+                # Update username_confirm with the newly registered username
+                username_confirm = username_entry.get()
+
+                print("User registered successfully!")
+
+                # Optionally, you can call show_results() here
+                # show_results()
+
+        except Exception as e:
+            print(f"Error: {e}")
+
+        finally:
+            # Close the cursor and database connection
+            cursor.close()
+
     # Création d'une fenêtre avec la classe Tk :
-    fenetre_login = Tk()
-    # Affichage de la fenêtre créée :
-    fenetre_login.title("Login")
-    fenetre_login.geometry("300x200")
-    fenetre_login.minsize(300, 300)
-    fenetre_login.maxsize(300, 300)
+    fenetre_register = Tk()
+    # Affichage de la fenêtre créée avec quelques paramètres :
+    fenetre_register.title("Register")
+    fenetre_register.geometry("300x200")
+    fenetre_register.minsize(300, 300)
+    fenetre_register.maxsize(300, 300)
+
+    # Création du label et de l'entrée pour le pseudo.
+    username_label = Label(fenetre_register, text="Pseudo :")
+    username_label.pack()
+    username_entry = Entry(fenetre_register, width=30)
+    username_entry.pack()
+
+    # Création du label et de l'entrée pour le mot de passe.
+    password_label = Label(fenetre_register, text="Mot de passe :")
+    password_label.pack()
+    password_entry = Entry(fenetre_register, width=30)
+    password_entry.pack()
+
+    # Création du bouton de validation
+    validation_button = Button(fenetre_register, text="Valider", command=register_sql)
+    validation_button.pack(side=BOTTOM, padx=5, pady=5)
+    fenetre_register.mainloop()
+    
+
+
 
 
 # boutons pour register ou login
-login_register = Button(filters, text="Login/Register", font=("Arial", 11), command=login)
+login_register = Button(filters, text="Login/Register", font=("Arial", 11), command=def_login_register)
 login_register.grid(row=1, column=2, pady=5)
 
 # start connection
