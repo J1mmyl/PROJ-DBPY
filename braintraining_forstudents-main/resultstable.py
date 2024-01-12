@@ -145,7 +145,7 @@ title = Label(text="TRAINING AFFICHAGE", font=("Arial, 15")).place(x=1100/2-109,
 
 # filters part
 filters = Frame(bg="white", padx=10)
-l_pseudo = Label(filters, text="Temps :", bg="white", padx=40, font=("Arial,11"))
+l_pseudo = Label(filters, text="Pseudo :", bg="white", padx=40, font=("Arial,11"))
 e_pseudo = Entry(filters)
 
 l_filter = Label(filters, text="Exercice :", bg="white", padx=40, font=("Arial,11"))
@@ -241,6 +241,11 @@ lvtot_time.grid(row=1, column=1, padx=(0, 10))
 lvtot_num_ok.grid(row=1, column=2, padx=(0, 10))
 lvtot_num_total.grid(row=1, column=3, padx=(0, 10))
 lvtot_pourcent_total.grid(row=1, column=4, padx=(0, 10), sticky=W)
+
+# -------------------------- entry id ----------------------------
+# entry pour l'id    
+id_entry = Entry(window, width=5)
+id_entry.pack(side="left", padx=10, pady=10)
 
 def delete_from_id():
     cursor = mydb.cursor()
@@ -410,9 +415,14 @@ def create_new_player():
     validation_button.pack(side=BOTTOM, padx=5, pady=5)
     fenetre.mainloop()
 
+# -------------------------- display name ----------------------------
+username_label = Label(filters, text="", font=("Arial", 11))
+username_label.grid(row=1, column=3, pady=5)
+
 # -------------------------- login & Register ----------------------------
 def def_login_register():
-    global id_entry
+    global id_entry, level, username_label, login_register
+    level = 0
 
     # fonction pour hasher le mot de passe
     def hash_password(password):
@@ -422,8 +432,9 @@ def def_login_register():
         # Fonction pour insérer les données dans la base de données
 
     def register_sql():
-        global username_confirmg, id_entry
+        global username_confirmg, id_entry, level, logout_btn
         cursor = mydb.cursor()
+
         try:
             # Check if the username already exists
             sql_select = "SELECT users.username FROM users WHERE username = %s"
@@ -431,7 +442,7 @@ def def_login_register():
             existing_username = cursor.fetchone()
 
             if existing_username:
-
+                login_register["state"] = "disabled"
                 def user_level():
 
                     level = "SELECT users.level FROM users WHERE username = %s"
@@ -440,13 +451,13 @@ def def_login_register():
                     return user_level
 
                 def destroy_fensters():
-
+                    login_register["state"] = "normal"
                     fenetre_login.destroy()
                     fenetre_register.destroy()
 
 
                 def user_login():
-                    global id_entry
+                    global level, id_entry
                     
                     if user_level()[0] > 1:
                         level = 2
@@ -455,19 +466,40 @@ def def_login_register():
 
                     username = "SELECT users.username FROM users WHERE username = %s"
                     cursor.execute(username, (username_entry.get(), ))
-
+                    # -------------------------- display name ----------------------------
                     username_display = cursor.fetchone()
-                    username_label = Label(filters, text=username_display, font=("Arial", 11))
+                    username_label = Label(filters, text=username_display[0], font=("Arial", 11))
                     username_label.grid(row=1, column=3, pady=5)
+
+                    print("Vous êtes connecté en tant que " + username_display[0])
+
+                    logout_btn = Button(filters, text="Logout", font=("Arial", 11), command=lambda:logout())
+                    logout_btn.grid(row=1, column=4, pady=5)
+                    
+
+                    # founcion pour se déconnecter
+                    def logout():
+                        global level, id_entry, logout_btn
+                        login_register["state"] = "normal"
+
+                        try:
+                            update_btn.destroy()
+                            delete_btn.destroy()
+                            delete_all_btn.destroy()
+                            create_btn.destroy()
+
+                            level = 0
+                            username_label.destroy()
+                            username_label.grid(row=1, column=3, pady=5)
+                            
+                        except:
+                            pass
+
                     fenetre_login.destroy()
                     fenetre_register.destroy()
 
                     if level == 2:
                         # -------------------------------- Create, delete, update data ----------------------------------
-                        # entry pour l'id    
-                        id_entry = Entry(window, width=5)
-                        id_entry.pack(side="left", padx=10, pady=10)
-
                         # boutons update pour modifier les données
                         update_btn = Button(window, text="Update", font=("Arial", 11), command=update_from_id)
                         update_btn.pack(side="left", padx=10, pady=10)
@@ -477,29 +509,19 @@ def def_login_register():
                         delete_btn.pack(side="left", padx=10, pady=10)
 
                         # boutons delete pour supprimer toutes les données
-                        delete_all_btn = Button(window, text="Delte All", font=("Arial", 11), command=delete_all_from_id)
+                        delete_all_btn = Button(window, text="Delete All", font=("Arial", 11), command=delete_all_from_id)
                         delete_all_btn.pack(side="left", padx=10, pady=10)
 
                         # boutons create pour créer un nouveau joueur
                         create_btn = Button(window, text="Create", font=("Arial", 11), command=create_new_player)
                         create_btn.pack(side="left", padx=10, pady=10)
+                        b_show_result["state"] = "normale"
 
-                    if level == 1:
-                        print("level has been reset to 1")
-                        # -------------------------------- Create, delete, update data ----------------------------------
-                        # entry pour l'id    
-                        id_entry.grid_forget()
-                        # boutons update pour modifier les données
-                        update_btn.grid_forget()
+                    elif level == 1:
+                        b_show_result["state"] = "normale"
 
-                        # boutons delete pour supprimer les données d'un id
-                        delete_btn.grid_forget()
-
-                        # boutons delete pour supprimer toutes les données
-                        delete_all_btn.grid_forget()
-
-                        # boutons create pour créer un nouveau joueur
-                        create_btn.grid_forget()
+                    else:
+                        print("Vous n'avez pas les droits pour modifier les données")
 
                 # Création d'une fenêtre avec la classe Tk :
                 fenetre_login = Tk()
@@ -568,7 +590,7 @@ def def_login_register():
     # Création du label et de l'entrée pour le mot de passe.
     password_label = Label(fenetre_register, text="Mot de passe :")
     password_label.pack()
-    password_entry = Entry(fenetre_register, width=30)
+    password_entry = Entry(fenetre_register, width=30, show="*")
     password_entry.pack()
 
     # Création du bouton de validation
